@@ -21,15 +21,15 @@ public class Game {
     /**
      * A HashSet of Squares, representing the walls included in a Level.
      */
-    private HashSet<Square> walls;
+    private final HashSet<Square> walls;
     /**
      * An array of Squares, contains all the Squares on the Grid.
      */
-    private Square[][] squares;
+    private final Square[][] squares;
     /**
      * The Snake the player controls.
      */
-    private Snake snake;
+    private final Snake snake;
     /**
      * The User playing the game. Used for score.
      */
@@ -61,12 +61,12 @@ public class Game {
     /**
      * A SoundPlayer instance used for playing music when the game starts.
      */
-    private SoundPlayer musicPlayer = new SoundPlayer();
+    private final SoundPlayer musicPlayer = new SoundPlayer();
     /**
      * An instance of Countdown which is used at the beginning of the game to give the player
      * a bit of time before starting.
      */
-    private Countdown countdown = new Countdown();
+    private final Countdown countdown = new Countdown();
 
     /**
      * A constructor for the Game class which loads all essential objects. It creates a GameWindow and starts a Cooldown.
@@ -88,6 +88,7 @@ public class Game {
         countdown.start(this);
     }
 
+
     /**
      * A constructor for testing purposes.
      */
@@ -104,9 +105,6 @@ public class Game {
     }
     public HashSet<Square> getWalls() {
         return walls;
-    }
-    public Square[][] getSquares() {
-        return squares;
     }
     public Snake getSnake() {
         return snake;
@@ -160,7 +158,7 @@ public class Game {
      */
     public void win(){
         stop();
-        gameWindow.getFrame().setVisible(false);
+        gameWindow.close();
         WinWindow winWindow = new WinWindow(gameWindow.getMenu());
         winWindow.show();
     }
@@ -205,11 +203,8 @@ public class Game {
      * @return A Boolean, true = collided with the tail, false = the Square isn't the tail
      */
     public Boolean checkCollisionWithTail(Square square){
-        if(square.equals(snake.getStructure().getLast())){ // We can ignore collision on the tail because the tail is going to move out of the way anyway
-            return true;
-        } else {
-            return false;
-        }
+        // We can ignore collision on the tail because the tail is going to move out of the way anyway
+        return square.equals(snake.getStructure().getLast());
     }
 
     /**
@@ -219,11 +214,7 @@ public class Game {
      * @return A boolean, true = valid, false = out of bounds
      */
     public static Boolean checkXCoordinate(int x, int arrayLength){
-        if(x >= 0 && x < arrayLength){
-            return true;
-        } else {
-            return false;
-        }
+        return x >= 0 && x < arrayLength;
     }
 
     /**
@@ -233,11 +224,7 @@ public class Game {
      * @return A boolean, true = valid, false = out of bounds
      */
     public static Boolean checkYCoordinate(int y, int arrayLength){
-        if(y >= 0 && y < arrayLength){
-            return true;
-        } else {
-            return false;
-        }
+        return y >= 0 && y < arrayLength;
     }
 
     /**
@@ -246,11 +233,7 @@ public class Game {
      */
     public void moveSnake(){
 
-        LinkedList<Square> tempSnake = new LinkedList<>();
-
-        for(Square square : snake.getStructure()){
-            tempSnake.add(square);
-        }
+        LinkedList<Square> tempSnake = new LinkedList<>(snake.getStructure());
 
         if(moveSnakeByOneSquare()){
             for(int i = 0; i < snake.getStructure().size(); i++){
@@ -335,7 +318,7 @@ public class Game {
      * Spawns an apple on an unoccupied Square.
      */
     public Square spawnApple(){
-        Boolean appleChanged = false;
+        boolean appleChanged = false;
         Square apple = null;
 
         Random random = new Random();
@@ -377,11 +360,7 @@ public class Game {
      * @return Boolean (true if the player has won, false if not)
      */
     public Boolean checkIfPlayerWon(LinkedList<Square> structure, HashSet<Square> walls, Square[][] squares){
-        if((structure.size() + walls.size()) == squares.length*squares.length){
-            return true;
-        } else {
-            return false;
-        }
+        return (structure.size() + walls.size()) == squares.length * squares.length;
     }
 
     /**

@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 /**
  * The Level class allows the user to add walls into the map which will kill them upon collision.
  */
-public class Level implements Serializable {
+public class Level implements Serializable, Comparable<Level> {
 
     private final int number;
 
@@ -94,7 +94,12 @@ public class Level implements Serializable {
             }
         }
         System.out.println("Level " + number + " loaded.");
+        reader.close();
         return walls;
     }
 
+    @Override
+    public int compareTo(Level level) {
+        return Integer.compare(number, level.getNumber());
+    }
 }

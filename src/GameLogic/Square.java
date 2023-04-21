@@ -13,10 +13,10 @@ import java.util.Objects;
  * You can draw an empty square, a Snake square (a square which is part of the Snake) and an apple.
  */
 public class Square {
-    private int xCoordinate;
-    private int yCoordinate;
-    private Color snakeColor = Configuration.getUser().getSnakeColor();
-    private int squareSize = Configuration.getSquareSize();
+    private final int xCoordinate;
+    private final int yCoordinate;
+    private final Color snakeColor = Configuration.getUser().getSnakeColor();
+    private final int squareSize = Configuration.getSquareSize();
 
     /**
      * A constructor which sets the x and y coordinates.
@@ -49,7 +49,7 @@ public class Square {
      * @param g A Graphics instance acquired from an overridden paintComponent() method.
      */
     public void drawEmpty(Graphics g){
-        draw(Color.WHITE, g);
+        draw(Configuration.SECONDARY_UI_COLOR, g);
     }
 
     /**

@@ -1,16 +1,17 @@
 package Data;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
 
-public class Item implements Comparable<Item>{
+public class Item implements Comparable<Item>, Serializable {
 
-    private Color color;
-    private int cost;
-    private String name;
-    private static HashMap<String,Item> SNAKE_COLORS = loadSnakeColors();
+    private final Color color;
+    private final int cost;
+    private final String name;
+    private static final HashMap<String,Item> SNAKE_COLORS = loadSnakeColors();
 
     private static HashMap<String,Item> loadSnakeColors(){
         HashMap<String, Item> snakeColors = new HashMap<>();

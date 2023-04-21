@@ -1,23 +1,32 @@
 package Data;
 
 import GameLogic.Direction;
+import Utilities.Serializer;
 
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 
 /**
  * Contains some settings used in the game such as window width and the User.
  */
 public abstract class Configuration {
-    private static User USER;
-    private static final int WINDOW_WIDTH = 600;
-    private static final int ROWS_AND_COLUMNS = 20;
-    private static final int GRID_WIDTH = 500;
-    private static int MOVE_PERIOD = 150;
-    private static final HashMap<Direction, Direction> OPPOSITE_DIRECTIONS = loadOppositeDirections();
+    private final static User USER = loadUser();
+    private final static int WINDOW_WIDTH = 600;
+    private final static int ROWS_AND_COLUMNS = 20;
+    private final static int GRID_WIDTH = 500;
+    private final static int MOVE_PERIOD = 150;
+    private final static HashMap<Direction, Direction> OPPOSITE_DIRECTIONS = loadOppositeDirections();
     public static Color PRIMARY_UI_COLOR = Color.GRAY;
     public static Color SECONDARY_UI_COLOR = Color.WHITE;
     public static Color BORDER_COLOR = Color.LIGHT_GRAY;
+
+
+    // DEFAULT COLOR PALETTE:
+    // public static Color PRIMARY_UI_COLOR = Color.GRAY;
+    // public static Color SECONDARY_UI_COLOR = Color.WHITE;
+    // public static Color BORDER_COLOR = Color.LIGHT_GRAY;
 
     /**
      * Loads the OPPOSITE_DIRECTIONS HashMap, assigning an opposite Direction to all values of Direction.
@@ -59,24 +68,23 @@ public abstract class Configuration {
     }
 
     public static User getUser(){
-        if(USER == null){
-            load(new User());
-        }
         return USER;
     }
 
-    /**
-     * Called at the very start of the program. Loads all necessary information used later on.
-     * @param user The User loaded from a file
-     */
-    public static void load(User user){
+    private static User loadUser(){
+        final Serializer<User> serializer = new Serializer<>();
+        File file = new File("Data\\user.txt");
 
-        if(user != null){
-            USER = user;
+        if(file.exists()){
+            try {
+                return serializer.loadObject(file);
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+                return new User();
+            }
         } else {
-            USER = new User();
+            System.out.println("User data file not found.");
+            return new User();
         }
-
-        loadOppositeDirections();
     }
 }

@@ -22,11 +22,12 @@ import static java.awt.event.KeyEvent.*;
  * Displays everything happening in the game. It is dependent on a Game and Menu instance, Game being the game displayed and Menu being the Menu opened when stopping the game.
  */
 public class GameWindow extends Window{
-    private final Game game;
+    private Game game;
     private JPanel sidePanel;
     private JLabel scoreLabel;
     private JLabel highScoreLabel;
     private final Menu menu;
+    private Grid grid;
 
     public GameWindow(Game game, Menu menu){
 
@@ -42,7 +43,7 @@ public class GameWindow extends Window{
         return menu;
     }
     public JPanel getGrid(){
-        return panel;
+        return grid;
     }
 
     @Override
@@ -61,12 +62,21 @@ public class GameWindow extends Window{
 
     @Override
     void loadPanel() {
-        panel = new Grid();
-        panel.setBounds(50,50, Configuration.getGridWidth(),Configuration.getGridWidth());
-        panel.setBorder(null);
+        panel = new JPanel();
+        panel.setBounds(0,0, frame.getWidth(),frame.getHeight());
+        panel.setBorder(BorderFactory.createLineBorder(Configuration.BORDER_COLOR,2));
         panel.setLayout(null);
-        panel.setVisible(true);
+        panel.setBackground(Configuration.SECONDARY_UI_COLOR);
         frame.add(panel);
+    }
+
+    private void loadGrid(){
+        grid = new Grid();
+        grid.setBounds(50,50, Configuration.getGridWidth(),Configuration.getGridWidth());
+        grid.setBorder(null);
+        grid.setLayout(null);
+        grid.setVisible(true);
+        panel.add(grid);
     }
 
     /**
@@ -76,14 +86,16 @@ public class GameWindow extends Window{
     public void loadSidePanel(Menu menu){
         sidePanel = new JPanel();
         sidePanel.setBounds(600,50,300,500);
+        sidePanel.setBorder(BorderFactory.createLineBorder(Configuration.BORDER_COLOR,2));
         sidePanel.setLayout(null);
         sidePanel.setBackground(Configuration.PRIMARY_UI_COLOR);
-        frame.add(sidePanel);
+        panel.add(sidePanel);
 
         WindowButton stopButton = new WindowButton(this,menu,"STOP"){
             @Override
             public void actionPerformed(ActionEvent e){
                 game.stopGame();
+                game = null;
                 closeAndOpen();
                 playSound();
             }
@@ -100,6 +112,7 @@ public class GameWindow extends Window{
     void load() {
         loadFrame();
         loadPanel();
+        loadGrid();
         loadSidePanel(menu);
     }
 
@@ -174,7 +187,7 @@ public class GameWindow extends Window{
         @Override
         public void paintComponent(Graphics g){
             super.paintComponent(g);
-            g.setColor(Color.GRAY);
+            g.setColor(Configuration.PRIMARY_UI_COLOR);
             g.fillRect(0,0,500,500);
 
             drawLines(g);
@@ -242,9 +255,14 @@ public class GameWindow extends Window{
          * @param g An instance of Graphics used to paint on a Grid
          */
         public void drawLines(Graphics g){
+
+            g.setColor(Configuration.BORDER_COLOR);
+
+            g.drawLine(0,499,499,499);
+            g.drawLine(499,0,499,499);
+
             for(int xCoordinate = 0; xCoordinate < Configuration.getRowsAndColumns(); xCoordinate++){
                 for(int yCoordinate = 0; yCoordinate < Configuration.getRowsAndColumns(); yCoordinate++){
-                    g.setColor(Configuration.SECONDARY_UI_COLOR);
                     g.drawLine(xCoordinate*Configuration.getSquareSize(),0,xCoordinate*Configuration.getSquareSize(),500);
                     g.drawLine(0,yCoordinate*Configuration.getSquareSize(),500,yCoordinate*Configuration.getSquareSize());
                 }

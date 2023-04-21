@@ -14,22 +14,11 @@ import java.awt.image.BufferedImage;
  * The MainMenu is what the player sees when they first boot up the game. Some other windows are also created here.
  */
 public class MainMenu extends Menu {
-    private final ShopWindow shopWindow = new ShopWindow(this);
-    private final LevelWindow levelWindow = new LevelWindow(this);
+    private ShopWindow shopWindow = new ShopWindow(this);
+    private LevelWindow levelWindow = new LevelWindow(this);
 
     public MainMenu(){
         load();
-    }
-
-    @Override
-    void loadFrame() {
-        frame = new JFrame();
-        frame.setResizable(false);
-        frame.setUndecorated(true);
-        frame.setSize(Configuration.getWindowWidth(),Configuration.getWindowWidth());
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        moveToCenter();
-        loadDefaultIconAndTitle();
     }
 
     @Override

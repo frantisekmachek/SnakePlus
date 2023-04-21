@@ -17,29 +17,30 @@ public class SoundPlayer {
      */
     public void playSound(String fileName)  {
 
-        File file = new File(fileName);
-
-        if(file.exists()){
-            try {
-                AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
-
-                if(audioStream != null){
-                    this.clip = AudioSystem.getClip();
-                    this.clip.open(audioStream);
-                    this.clip.start();
-                }
-            } catch (UnsupportedAudioFileException e) {
-                System.out.println("File called " + fileName + " isn't a supported audio file.");
-                e.printStackTrace();
-            } catch (IOException | LineUnavailableException e) {
-                e.printStackTrace();
-            }
-
-        } else {
-            System.out.println(file.getName() + " doesn't exist.");
-        }
 
     }
+
+    //File file = new File(fileName);
+    //
+    //        if(file.exists()){
+    //            try {
+    //                AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
+    //
+    //                if(audioStream != null){
+    //                    this.clip = AudioSystem.getClip();
+    //                    this.clip.open(audioStream);
+    //                    this.clip.start();
+    //                }
+    //            } catch (UnsupportedAudioFileException e) {
+    //                System.out.println("File called " + fileName + " isn't a supported audio file.");
+    //                e.printStackTrace();
+    //            } catch (IOException | LineUnavailableException e) {
+    //                e.printStackTrace();
+    //            }
+    //
+    //        } else {
+    //            System.out.println(file.getName() + " doesn't exist.");
+    //        }
 
     /**
      * Stops the Clip if it's playing.

@@ -22,7 +22,7 @@ public class Countdown {
     public void start(Game game){
 
         timer.schedule(new TimerTask() {
-            final SoundPlayer soundPlayer = new SoundPlayer();
+            SoundPlayer soundPlayer = new SoundPlayer();
             int i = 4;
             @Override
             public void run() {
@@ -37,7 +37,6 @@ public class Countdown {
                         label.setText(null);
                         stop();
                     } else if (i > 0 && i < 4){
-                        soundPlayer.stopSound();
                         soundPlayer.playSound("Sounds\\tick_sound.wav");
                     }
             }

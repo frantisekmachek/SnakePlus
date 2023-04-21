@@ -50,14 +50,14 @@ class GameTest {
     @Test
     void checkXCoordinateTest() {
         Game game = new Game();
-        Boolean valid = game.checkXCoordinate(10,9);
+        boolean valid = game.checkXCoordinate(10,9);
         assertFalse(valid);
     }
 
     @Test
     void checkYCoordinateTest() {
         Game game = new Game();
-        Boolean valid = game.checkYCoordinate(10,7);
+        boolean valid = game.checkYCoordinate(10,7);
         assertTrue(valid);
     }
 

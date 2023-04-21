@@ -1,9 +1,9 @@
 package UserInterface.Buttons;
 
+import Data.Configuration;
 import GameLogic.Game;
 import UserInterface.Windows.Menu;
 import UserInterface.Windows.Window;
-import java.awt.event.ActionEvent;
 
 /**
  * The PlayButton is a WindowButton which starts the game when clicked. It has 2 constructors - one for a basic
@@ -37,6 +37,6 @@ public class PlayButton extends WindowButton{
     @Override
     public void closeAndOpen(){
         currentWindow.close();
-        Game game = new Game(levelNumber, (Menu)currentWindow);
+        new Game(levelNumber, (Menu)currentWindow);
     }
 }

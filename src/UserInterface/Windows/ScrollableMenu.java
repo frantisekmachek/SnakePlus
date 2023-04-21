@@ -10,11 +10,11 @@ import java.awt.image.BufferedImage;
 public abstract class ScrollableMenu extends Menu{
 
     protected final Menu menu;
-    protected final String backgroundFileName;
+    protected BufferedImage backgroundImage;
 
     public ScrollableMenu(Menu menu, String backgroundFileName){
         this.menu = menu;
-        this.backgroundFileName = backgroundFileName;
+        backgroundImage = DecalLoader.loadDecal(backgroundFileName);
     }
 
     @Override
@@ -22,7 +22,7 @@ public abstract class ScrollableMenu extends Menu{
         panel = new JPanel(){
             @Override
             public void paintComponent(Graphics g){
-                loadBackground(g, backgroundFileName);
+                loadBackground(g);
             }
         };
 
@@ -30,8 +30,7 @@ public abstract class ScrollableMenu extends Menu{
         frame.add(panel);
     }
 
-    public void loadBackground(Graphics g, String fileName){
-        BufferedImage backgroundImage = DecalLoader.loadDecal(fileName);
+    public void loadBackground(Graphics g){
         Graphics2D g2d = (Graphics2D)g;
 
         for(int i = 0; i < panel.getHeight(); i = i + Configuration.getWindowWidth()){ // Draws the background image as many times as needed with scaling height

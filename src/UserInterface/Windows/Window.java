@@ -49,10 +49,10 @@ public abstract class Window {
     }
 
     public void close(){
-        this.frame.setVisible(false);
+        this.frame.dispose();
     }
     public void loadDefaultIconAndTitle(){
-        Image image = DecalLoader.loadDecal("Decals\\green_snake_up.png");
+        Image image = DecalLoader.loadDecal("Decals\\icon.png");
         frame.setIconImage(image);
         frame.setTitle("Snake+");
     }

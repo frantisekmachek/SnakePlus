@@ -1,8 +1,11 @@
 package Data;
 
+import Utilities.Serializer;
 import Utilities.SoundPlayer;
 
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,8 +16,8 @@ import java.util.HashSet;
 public class User implements Serializable {
 
     private int credits = 1010101010;
-    private HashMap<Integer,Integer> levelHighScores = new HashMap<>();
-    private HashSet<Item> unlockedItems = new HashSet<>();
+    private final HashMap<Integer,Integer> levelHighScores = new HashMap<>();
+    private final HashSet<Item> unlockedItems = new HashSet<>();
     private Item chosenItem;
 
     public User(){
@@ -30,13 +33,14 @@ public class User implements Serializable {
      */
     public void addCredits(int amount){
         credits = credits + amount;
+        saveData();
     }
 
     /**
-     * Finds the User's highscore on a provided Level. If the User has no highscore,
+     * Finds the User's high score on a provided Level. If the User has no high score,
      * a new one is created and set to 0.
      * @param levelNumber The number of the Level
-     * @return Highscore on the provided Level
+     * @return High score on the provided Level
      */
     public int getLevelHighScore(int levelNumber){
 
@@ -44,18 +48,19 @@ public class User implements Serializable {
             return levelHighScores.get(levelNumber);
         } else {
             setLevelHighScore(levelNumber, 0);
+            saveData();
             return 0;
         }
     }
 
     public void setLevelHighScore(int levelNumber, int highScore){
         levelHighScores.put(levelNumber, highScore);
+        saveData();
     }
-
     public void setChosenItem(Item item){
         chosenItem = item;
+        saveData();
     }
-
     public Color getSnakeColor(){
         return chosenItem.getColor();
     }
@@ -89,6 +94,7 @@ public class User implements Serializable {
     public void unlockItem(Item item){
         unlockedItems.add(item);
         System.out.println("Item called " + item.getName() + " has been unlocked.");
+        saveData();
     }
 
     /**
@@ -112,10 +118,24 @@ public class User implements Serializable {
      * @return true/false
      */
     public Boolean isUnlocked(Item item){
-        if(unlockedItems.contains(item)){
-            return true;
-        } else {
-            return false;
+        return unlockedItems.contains(item);
+    }
+
+    public void saveData(){
+        Serializer<User> serializer = new Serializer<>();
+        File dataDirectory = new File("Data");
+
+        if (!dataDirectory.exists()){
+            dataDirectory.mkdirs();
         }
+
+        File file = new File("Data\\user.txt");
+        try {
+            serializer.saveObject(this, file);
+            System.out.println("User data has been saved.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }
