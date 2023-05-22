@@ -1,10 +1,13 @@
 package UnitTesting;
 
+import GameLogic.Direction;
 import GameLogic.Game;
 import GameLogic.Snake;
 import GameLogic.Square;
+import Utilities.GameGenerator;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 
@@ -49,15 +52,13 @@ class GameTest {
 
     @Test
     void checkXCoordinateTest() {
-        Game game = new Game();
-        boolean valid = game.checkXCoordinate(10,9);
+        boolean valid = Game.checkXCoordinate(10,9);
         assertFalse(valid);
     }
 
     @Test
     void checkYCoordinateTest() {
-        Game game = new Game();
-        boolean valid = game.checkYCoordinate(10,7);
+        boolean valid = Game.checkYCoordinate(10,7);
         assertTrue(valid);
     }
 
@@ -77,5 +78,41 @@ class GameTest {
 
         Boolean won = game.checkIfPlayerWon(structure,walls,squares);
         assertTrue(won);
+    }
+
+    @Test
+    void moveSnakeTest(){
+        Game game = new Game();
+
+        Square[][] squares = GameGenerator.generateSquares();
+        Snake snake = GameGenerator.generateSnake(squares);
+        snake.setDirection(Direction.RIGHT);
+        LinkedList<Square> structure = snake.getStructure();
+
+        // The structure we're expecting (the new snake position)
+        LinkedList<Square> correctStructure = new LinkedList<>();
+        correctStructure.add(squares[3][0]);
+        correctStructure.add(squares[2][0]);
+        correctStructure.add(squares[1][0]);
+
+        game.moveSnake(snake);
+
+        assertEquals(structure, correctStructure);
+    }
+
+    @Test
+    void getAvailableSquaresTest(){
+        Game game = new Game();
+        ArrayList<Square> availableSquares = new ArrayList<>();
+        Square[][] squares = GameGenerator.generateSquares();
+
+        for(Square[] squareArray : squares){ // Adds all squares that aren't part of the snake (there are no walls, so we can ignore them)
+            for(Square square : squareArray){
+                if(!game.getSnake().getStructure().contains(square)){
+                    availableSquares.add(square);
+                }
+            }
+        }
+        assertEquals(game.getAvailableSquares(), availableSquares);
     }
 }

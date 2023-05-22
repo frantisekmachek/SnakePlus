@@ -1,13 +1,15 @@
 package UserInterface.Buttons;
 
 import Data.Configuration;
-import Utilities.SoundPlayer;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * This class is a JButton that implements the ActionListener interface and is used for creating special buttons such as the PlayButton or PurchaseButton.
+ */
 public abstract class Button extends JButton implements ActionListener {
 
     protected Font font = new Font("Arial", Font.BOLD, 40);
@@ -36,8 +38,4 @@ public abstract class Button extends JButton implements ActionListener {
 
     public abstract void actionPerformed(ActionEvent e);
 
-    public void playSound(){
-        final SoundPlayer soundPlayer = new SoundPlayer();
-        soundPlayer.playSound("Sounds\\click.wav");
-    }
 }

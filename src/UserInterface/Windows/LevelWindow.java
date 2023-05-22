@@ -10,24 +10,33 @@ import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * The Window where the user can access Levels.
+ */
 public class LevelWindow extends ScrollableMenu {
 
+    private final LevelCreationWindow levelCreationWindow = new LevelCreationWindow(this);
+
     public LevelWindow(Menu menu){
-        super(menu, "Decals\\default_menu.png");
+        super(menu, "res\\Decals\\default_menu.png");
         load();
     }
 
     @Override
     void loadButtons() {
         addButton(new WindowButton(this,menu, "BACK"));
-        addButton(new WindowButton(this,menu, "CREATOR"));
+        addButton(new WindowButton(this,levelCreationWindow, "CREATOR"));
 
-        File levelsFile = new File("Levels");
+        File levelsFile = new File("res\\Levels");
         if(levelsFile.exists()){
             loadLevelButtons(levelsFile);
         }
     }
 
+    /**
+     * Loads a button for every level inside the Levels folder.
+     * @param levelsFile The Levels folder
+     */
     private void loadLevelButtons(File levelsFile){
         ArrayList<File> levelList = new ArrayList<>();
         File[] fileArray = levelsFile.listFiles();

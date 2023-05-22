@@ -6,7 +6,7 @@ import Utilities.DecalLoader;
  */
 public class WinWindow extends EndingWindow{
     public WinWindow(Window menu) {
-        super(menu, DecalLoader.loadDecal("Decals\\death_screen.png"));
+        super(menu, DecalLoader.loadDecal("res\\Decals\\win_screen.png"));
     }
 
     @Override

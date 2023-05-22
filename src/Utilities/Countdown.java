@@ -1,5 +1,6 @@
 package Utilities;
 
+import Data.Configuration;
 import GameLogic.Game;
 
 import javax.swing.*;
@@ -13,16 +14,15 @@ import java.util.TimerTask;
 public class Countdown {
 
     private JLabel label;
-    Timer timer = new Timer();
+    private final Timer timer = new Timer();
 
     /**
      * Starts the countdown in a Game instance.
-     * @param game
+     * @param game An instance of Game
      */
     public void start(Game game){
 
         timer.schedule(new TimerTask() {
-            SoundPlayer soundPlayer = new SoundPlayer();
             int i = 4;
             @Override
             public void run() {
@@ -31,13 +31,9 @@ public class Countdown {
                     if(i == 0){
                         label.setText("GO!");
                         game.startGame();
-                        game.getMusicPlayer().playSound("Sounds\\music.wav");
-                        game.getMusicPlayer().loopSound();
                     } else if (i == -1){
                         label.setText(null);
                         stop();
-                    } else if (i > 0 && i < 4){
-                        soundPlayer.playSound("Sounds\\tick_sound.wav");
                     }
             }
         }, 2000,1000);
@@ -49,10 +45,10 @@ public class Countdown {
     public JLabel setupLabel(){
         JLabel label = new JLabel();
         label.setFont(new Font("Arial", Font.BOLD, 250));
-        label.setForeground(Color.BLACK);
+        label.setForeground(Configuration.BORDER_COLOR);
         label.setHorizontalAlignment(SwingConstants.CENTER);
         label.setVerticalAlignment(SwingConstants.CENTER);
-        label.setBounds(0,0,500,500);
+        label.setBounds(0,0, Configuration.getGridWidth(),Configuration.getGridWidth());
 
         this.label = label;
 

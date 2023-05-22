@@ -5,6 +5,9 @@ import Utilities.DecalLoader;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * A window consisting of a JFrame and JPanel.
+ */
 public abstract class Window {
 
     protected JFrame frame;
@@ -44,15 +47,25 @@ public abstract class Window {
         return this.frame;
     }
 
+    /**
+     * Opens the Window's JFrame.
+     */
     public void open(){
-        this.frame.setVisible(true);
+        frame.setVisible(true);
     }
 
+    /**
+     * Closes the Window's JFrame.
+     */
     public void close(){
-        this.frame.dispose();
+        frame.dispose();
     }
+
+    /**
+     * Loads the default icon and title of the JFrame.
+     */
     public void loadDefaultIconAndTitle(){
-        Image image = DecalLoader.loadDecal("Decals\\icon.png");
+        Image image = DecalLoader.loadDecal("res\\Decals\\icon.png");
         frame.setIconImage(image);
         frame.setTitle("Snake+");
     }

@@ -9,12 +9,20 @@ import java.awt.image.BufferedImage;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * The Window shown when the game ends.
+ */
 public abstract class EndingWindow extends Window{
     protected Timer timer = new Timer();
     protected WindowButton exitButton;
     protected Window menu;
     protected BufferedImage background;
 
+    /**
+     * A constructor for the EndingWindow class. Takes in a Window instance (the Window opened when closing this one) and a BufferedImage (the background). The elements are loaded.
+     * @param menu the Window opened when closing the ending window
+     * @param background the background image (BufferedImage)
+     */
     public EndingWindow(Window menu, BufferedImage background){
         this.menu = menu;
         this.background = background;
@@ -52,13 +60,19 @@ public abstract class EndingWindow extends Window{
         loadDefaultIconAndTitle();
     }
 
+    /**
+     * Closes the ending window and opens the menu where the Level was opened.
+     */
     public void openMenu(){
-        this.frame.setVisible(false);
+        close();
         menu.open();
     }
-    public void show(){
-        frame.setVisible(true);
 
+    /**
+     * Opens the ending window. It's closed after 5 seconds if it's still open.
+     */
+    public void show(){
+        open();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -69,12 +83,20 @@ public abstract class EndingWindow extends Window{
         }, 5000);
     }
 
+    /**
+     * Loads the exit button on the frame which takes you to the menu.
+     */
     public void loadExitButton(){
         exitButton = new WindowButton(this, menu, "EXIT");
         panel.add(exitButton);
         exitButton.setBounds(200,450, 200,75);
     }
 
+    /**
+     * Draws the background image of the ending window.
+     * @param image The background image
+     * @param g An instance of Graphics
+     */
     public void drawScreen(BufferedImage image, Graphics g){
         if(image != null){
             Graphics2D g2d = (Graphics2D)g;

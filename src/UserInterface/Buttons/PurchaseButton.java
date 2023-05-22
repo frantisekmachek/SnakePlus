@@ -4,7 +4,6 @@ import Data.Configuration;
 import Data.Item;
 import Data.User;
 import UserInterface.Windows.ShopWindow;
-import Utilities.SoundPlayer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,8 +13,8 @@ import java.awt.event.ActionEvent;
  * Used in the Shop and triggers the purchase of an Item.
  */
 public class PurchaseButton extends Button {
-    private Item item;
-    private ShopWindow shopWindow;
+    private final Item item;
+    private final ShopWindow shopWindow;
     public PurchaseButton(ShopWindow shopWindow, Item item){
         this.item = item;
         this.shopWindow = shopWindow;
@@ -35,8 +34,6 @@ public class PurchaseButton extends Button {
             user.purchaseItem(item);
         } else {
             user.setChosenItem(item);
-            final SoundPlayer soundPlayer = new SoundPlayer();
-            soundPlayer.playSound("Sounds\\click.wav");
         }
         shopWindow.update();
     }

@@ -54,6 +54,11 @@ public abstract class Menu extends Window{
         panel.add(Box.createRigidArea(new Dimension(0, 20)));
         panel.add(component);
     }
+
+    /**
+     * Adds a JButton to the Menu.
+     * @param button The JButton added
+     */
     void addButton(JButton button){
         addComponent(button);
         buttons.add(button);

@@ -9,11 +9,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 
+/**
+ * The Window where the user can purchase snake colors.
+ */
 public class ShopWindow extends ScrollableMenu{
 
     private final CreditPanel creditPanel = new CreditPanel();
     public ShopWindow(Menu menu){
-        super(menu, "Decals\\default_menu.png");
+        super(menu, "res\\Decals\\default_menu.png");
         load();
     }
 
@@ -38,6 +41,10 @@ public class ShopWindow extends ScrollableMenu{
 
     }
 
+    /**
+     * Updates all the buttons. That means that the button of the chosen color will have a black border and all the text will match the current state of the item
+     * (for example if it's purchased already, the cost isn't shown).
+     */
     public void update(){
         creditPanel.update();
         for(JButton button : buttons){
@@ -61,22 +68,27 @@ public class ShopWindow extends ScrollableMenu{
         update();
     }
 
+    /**
+     * A JPanel that tells the current amount of credits.
+     */
     private class CreditPanel extends JPanel{
-        private Font font = new Font("Arial", Font.BOLD, 30);
-        private JLabel label = new JLabel();
+        private final JLabel label = new JLabel();
         public CreditPanel(){
 
             this.setLayout(new FlowLayout());
             this.setOpaque(false);
 
             label.setForeground(Configuration.SECONDARY_UI_COLOR);
-            label.setFont(font);
+            label.setFont(new Font("Arial", Font.BOLD, 30));
             label.setAlignmentX(CENTER_ALIGNMENT);
             this.add(label);
 
             update();
         }
 
+        /**
+         * Changes the text to the user's amount of credits.
+         */
         public void update(){
             label.setText("CREDITS: " + Configuration.getUser().getCredits());
         }

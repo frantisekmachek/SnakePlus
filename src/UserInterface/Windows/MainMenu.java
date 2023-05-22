@@ -14,8 +14,8 @@ import java.awt.image.BufferedImage;
  * The MainMenu is what the player sees when they first boot up the game. Some other windows are also created here.
  */
 public class MainMenu extends Menu {
-    private ShopWindow shopWindow = new ShopWindow(this);
-    private LevelWindow levelWindow = new LevelWindow(this);
+    private final ShopWindow shopWindow = new ShopWindow(this);
+    private final LevelWindow levelWindow = new LevelWindow(this);
 
     public MainMenu(){
         load();
@@ -23,7 +23,7 @@ public class MainMenu extends Menu {
 
     @Override
     void loadPanel() {
-        BufferedImage backgroundImage = DecalLoader.loadDecal("Decals\\main_menu.png");
+        BufferedImage backgroundImage = DecalLoader.loadDecal("res\\Decals\\main_menu.png");
         if(backgroundImage != null){
             panel = new JPanel(){
                 @Override
