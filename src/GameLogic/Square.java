@@ -15,7 +15,6 @@ import java.util.Objects;
 public class Square {
     private final int xCoordinate;
     private final int yCoordinate;
-    private final Color snakeColor = Configuration.getUser().getSnakeColor();
     private final int squareSize = Configuration.getSquareSize();
 
     /**
@@ -57,7 +56,7 @@ public class Square {
      * @param g A Graphics instance acquired from an overridden paintComponent() method.
      */
     public void drawSnake(Graphics g){
-        draw(snakeColor, g);
+        draw(Configuration.getUser().getSnakeColor(), g);
     }
 
     /**
@@ -65,7 +64,7 @@ public class Square {
      * @param g A Graphics instance acquired from an overridden paintComponent() method.
      */
     public void drawApple(Graphics g){
-        BufferedImage appleImage = DecalLoader.loadDecal("Decals\\apple.png");
+        BufferedImage appleImage = DecalLoader.loadDecal("res\\Decals\\apple.png");
         if(appleImage != null){
             Graphics2D g2d = (Graphics2D)g;
             g2d.drawImage(appleImage,xCoordinate*squareSize,yCoordinate*squareSize, squareSize, squareSize, null);
@@ -95,7 +94,7 @@ public class Square {
             Graphics2D g2d = (Graphics2D)g;
             g2d.drawImage(image,xCoordinate*squareSize,yCoordinate*squareSize, squareSize, squareSize, null);
         } else {
-            draw(snakeColor, g);
+            draw(Configuration.getUser().getSnakeColor(), g);
         }
     }
 

@@ -22,7 +22,6 @@ public abstract class Configuration {
     public static Color SECONDARY_UI_COLOR = Color.WHITE;
     public static Color BORDER_COLOR = Color.LIGHT_GRAY;
 
-
     // DEFAULT COLOR PALETTE:
     // public static Color PRIMARY_UI_COLOR = Color.GRAY;
     // public static Color SECONDARY_UI_COLOR = Color.WHITE;
@@ -51,26 +50,59 @@ public abstract class Configuration {
     public static Direction getOppositeDirection(Direction direction){
         return OPPOSITE_DIRECTIONS.get(direction);
     }
+
+    /**
+     * A getter for the window width.
+     * @return window width (integer)
+     */
     public static int getWindowWidth(){
         return WINDOW_WIDTH;
     }
+
+    /**
+     * A getter for the row and column amount.
+     * @return row and column amount (integer)
+     */
     public static int getRowsAndColumns(){
         return ROWS_AND_COLUMNS;
     }
+
+    /**
+     * A getter for the grid width.
+     * @return grid width (integer)
+     */
     public static int getGridWidth(){
         return GRID_WIDTH;
     }
+
+    /**
+     * Calculates the size of individual squares.
+     * @return square size (integer)
+     */
     public static int getSquareSize(){
         return GRID_WIDTH/ROWS_AND_COLUMNS;
     }
+
+    /**
+     * A getter for the move period.
+     * @return move period in milliseconds (integer)
+     */
     public static int getMovePeriod(){
         return MOVE_PERIOD;
     }
 
+    /**
+     * A getter for the User.
+     * @return The User currently loaded
+     */
     public static User getUser(){
         return USER;
     }
 
+    /**
+     * Loads the User from a file. If it can't be found, a new User is created.
+     * @return User
+     */
     private static User loadUser(){
         final Serializer<User> serializer = new Serializer<>();
         File file = new File("Data\\user.txt");

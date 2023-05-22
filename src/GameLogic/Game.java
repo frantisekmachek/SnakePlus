@@ -7,7 +7,6 @@ import UserInterface.Windows.Menu;
 import UserInterface.Windows.WinWindow;
 import Utilities.Countdown;
 import Utilities.GameGenerator;
-import Utilities.SoundPlayer;
 
 import javax.swing.*;
 import java.util.*;
@@ -18,54 +17,16 @@ import java.util.Timer;
  */
 public class Game {
 
-    /**
-     * A HashSet of Squares, representing the walls included in a Level.
-     */
     private final HashSet<Square> walls;
-    /**
-     * An array of Squares, contains all the Squares on the Grid.
-     */
     private final Square[][] squares;
-    /**
-     * The Snake the player controls.
-     */
     private final Snake snake;
-    /**
-     * The User playing the game. Used for score.
-     */
     private User user;
-    /**
-     * The GameWindow displaying what's happening in the game.
-     */
     private GameWindow gameWindow;
-    /**
-     * Score are points the player acquires through collecting apples. One apple = 1 score.
-     */
     private int score;
-    /**
-     * One Square assigned to be an apple. Can be any apple inside the squares array.
-     */
     private Square apple;
-    /**
-     * The Level chosen by the player. If it's the default game with no walls, it is set to Level 0.
-     */
-    private Level level;
-    /**
-     * A Timer instance used for timing the update sequence.
-     */
-    private Timer timer = new Timer();
-    /**
-     * A Boolean which is true if the game is still running and false if not.
-     */
+    private final Level level;
+    private final Timer timer = new Timer();
     private Boolean playing = false;
-    /**
-     * A SoundPlayer instance used for playing music when the game starts.
-     */
-    private final SoundPlayer musicPlayer = new SoundPlayer();
-    /**
-     * An instance of Countdown which is used at the beginning of the game to give the player
-     * a bit of time before starting.
-     */
     private final Countdown countdown = new Countdown();
 
     /**
@@ -88,7 +49,6 @@ public class Game {
         countdown.start(this);
     }
 
-
     /**
      * A constructor for testing purposes.
      */
@@ -100,26 +60,52 @@ public class Game {
         this.snake = GameGenerator.generateSnake(squares);
     }
 
+    /**
+     * A getter for the current score.
+     * @return the current score
+     */
     public int getScore(){
         return this.score;
     }
+
+    /**
+     * A getter for the Level's walls.
+     * @return a HashSet of Squares
+     */
     public HashSet<Square> getWalls() {
         return walls;
     }
+
+    /**
+     * A getter for the snake.
+     * @return a Snake instance
+     */
     public Snake getSnake() {
         return snake;
     }
+
+    /**
+     * A getter for the apple.
+     * @return a Square instance
+     */
     public Square getApple(){
         return apple;
     }
+
+    /**
+     * A getter for the current Level.
+     * @return the current Level
+     */
     public Level getLevel(){
         return level;
     }
+
+    /**
+     * Checks if the game is being played or not.
+     * @return true/false
+     */
     public Boolean isPlaying(){
         return playing;
-    }
-    public SoundPlayer getMusicPlayer(){
-        return musicPlayer;
     }
 
     /**
@@ -150,7 +136,7 @@ public class Game {
         countdown.stop();
         playing = false;
         stopTimer();
-        musicPlayer.stopSound();
+        user.saveData();
     }
 
     /**
@@ -231,11 +217,11 @@ public class Game {
      * Moves the Snake. Creates a temporary Snake to help with moving every Square by one.
      * First it checks if the Snake can move by one Square. If it did, all the other Squares move as well.
      */
-    public void moveSnake(){
+    public void moveSnake(Snake snake){
 
         LinkedList<Square> tempSnake = new LinkedList<>(snake.getStructure());
 
-        if(moveSnakeByOneSquare()){
+        if(moveSnakeByOneSquare(snake)){
             for(int i = 0; i < snake.getStructure().size(); i++){
                 if(i + 1 < snake.getStructure().size()){
                     Square square = tempSnake.get(i);
@@ -252,7 +238,7 @@ public class Game {
      * where the apple used to be.
      * @return A Boolean, true = has moved, false = hasn't moved
      */
-    public Boolean moveSnakeByOneSquare() {
+    public Boolean moveSnakeByOneSquare(Snake snake) {
         Square head = snake.getStructure().getFirst();
         int xOffset = 0;
         int yOffset = 0;
@@ -289,8 +275,9 @@ public class Game {
             public void run() {
                 if(checkIfPlayerWon(snake.getStructure(), walls, squares)){
                     win();
+                } else {
+                    update();
                 }
-                update();
             }
         }, Configuration.getMovePeriod(), Configuration.getMovePeriod());
     }
@@ -300,7 +287,7 @@ public class Game {
      */
     public void update(){
         if(playing){
-            moveSnake();
+            moveSnake(snake);
             snake.setDirectionCooldown(false);
             gameWindow.getFrame().repaint();
         }
@@ -318,41 +305,53 @@ public class Game {
      * Spawns an apple on an unoccupied Square.
      */
     public Square spawnApple(){
-        boolean appleChanged = false;
-        Square apple = null;
 
-        Random random = new Random();
-        while(!appleChanged){
-            int randomX = random.nextInt(squares.length);
-            int randomY = random.nextInt(squares.length);
-            Square square = squares[randomX][randomY];
+        if((snake.getStructure().size() + walls.size()) != squares.length * squares.length){
 
-            if(!snake.getStructure().contains(square) && !walls.contains(square)){
-                apple = squares[randomX][randomY];
-                appleChanged = true;
-            }
+            ArrayList<Square> availableSquares = getAvailableSquares();
+            Random random = new Random();
+
+            int index = random.nextInt(availableSquares.size());
+            apple = availableSquares.get(index);
+
+        } else {
+            apple = null;
         }
-
         return apple;
     }
 
     /**
-     * When the apple is "eaten", the Snake grows by one Square, the User gets 1 credit and 1 score is added. A new apple is spawned.
+     * Finds all the empty Squares in the squares array.
+     * @return an ArrayList of empty Squares
+     */
+    public ArrayList<Square> getAvailableSquares(){
+        ArrayList<Square> list = new ArrayList<>();
+        for(Square[] squareArray : squares){
+            list.addAll(Arrays.asList(squareArray));
+        }
+        list.removeAll(walls);
+        list.removeAll(snake.getStructure());
+
+        return list;
+    }
+
+    /**
+     * The Snake grows by one Square. The User gets an amount of credits based on the amount of walls and the Snake's size. A new apple is spawned.
      */
     public void eatApple(){
-
-        SoundPlayer appleBitePlayer = new SoundPlayer();
-        appleBitePlayer.playSound("Sounds\\bite.wav");
-
         snake.growSnake(apple);
-        user.addCredits(1);
         addScore();
+        spawnApple();
 
-        if(!checkIfPlayerWon(snake.getStructure(), walls, squares)){
-            apple = spawnApple();
+        int creditMultiplier = (walls.size()/20);
+        int credit;
+        if(creditMultiplier == 0){
+            credit = 1 + (snake.getStructure().size()/10);
         } else {
-            apple = null;
+            credit = 1 + (snake.getStructure().size()/10) * creditMultiplier;
         }
+        user.addCredits(credit);
+        System.out.println("The user has gained " + credit + " credits.");
     }
 
     /**
@@ -364,7 +363,7 @@ public class Game {
     }
 
     /**
-     * Adds one score and updates the score label to match it. If the score is higher than the User's highscore, the highscore is updated.
+     * Adds one score and updates the score label to match it. If the score is higher than the User's high score, the high score is updated.
      */
     public void addScore(){
         score++;

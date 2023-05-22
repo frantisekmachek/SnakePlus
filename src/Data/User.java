@@ -1,7 +1,6 @@
 package Data;
 
 import Utilities.Serializer;
-import Utilities.SoundPlayer;
 
 import java.awt.*;
 import java.io.File;
@@ -15,13 +14,14 @@ import java.util.HashSet;
  */
 public class User implements Serializable {
 
-    private int credits = 1010101010;
+    private int credits = 0;
     private final HashMap<Integer,Integer> levelHighScores = new HashMap<>();
     private final HashSet<Item> unlockedItems = new HashSet<>();
     private Item chosenItem;
 
     public User(){
         HashMap<String,Item> snakeColors = Item.getSnakeColors();
+
         Item item = snakeColors.get("GREEN");
         unlockedItems.add(item);
         chosenItem = item;
@@ -33,7 +33,6 @@ public class User implements Serializable {
      */
     public void addCredits(int amount){
         credits = credits + amount;
-        saveData();
     }
 
     /**
@@ -53,22 +52,46 @@ public class User implements Serializable {
         }
     }
 
-    public void setLevelHighScore(int levelNumber, int highScore){
-        levelHighScores.put(levelNumber, highScore);
-        saveData();
-    }
-    public void setChosenItem(Item item){
-        chosenItem = item;
-        saveData();
-    }
+    /**
+     * A getter for the selected snake color.
+     * @return snake color
+     */
     public Color getSnakeColor(){
         return chosenItem.getColor();
     }
+
+    /**
+     * A getter for the chosen Item.
+     * @return the User's chosen Item
+     */
     public Item getChosenItem(){
         return chosenItem;
     }
+
+    /**
+     * A getter for the User's credits.
+     * @return the User's credits (integer)
+     */
     public int getCredits(){
         return credits;
+    }
+
+    /**
+     * Sets the User's high score on a Level.
+     * @param levelNumber The number of the Level
+     * @param highScore The new high score
+     */
+    public void setLevelHighScore(int levelNumber, int highScore){
+        levelHighScores.put(levelNumber, highScore);
+    }
+
+    /**
+     * Sets the User's chosen Item.
+     * @param item the new chosen Item
+     */
+    public void setChosenItem(Item item){
+        chosenItem = item;
+        saveData();
     }
 
     /**
@@ -80,9 +103,6 @@ public class User implements Serializable {
 
             credits = credits - item.getCost();
             unlockItem(item);
-
-            SoundPlayer purchaseSoundPlayer = new SoundPlayer();
-            purchaseSoundPlayer.playSound("Sounds\\purchase.wav");
 
         }
     }
@@ -121,6 +141,9 @@ public class User implements Serializable {
         return unlockedItems.contains(item);
     }
 
+    /**
+     * Saves the User in a text file.
+     */
     public void saveData(){
         Serializer<User> serializer = new Serializer<>();
         File dataDirectory = new File("Data");

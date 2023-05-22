@@ -23,25 +23,37 @@ import static java.awt.event.KeyEvent.*;
  */
 public class GameWindow extends Window{
     private Game game;
-    private JPanel sidePanel;
     private JLabel scoreLabel;
     private JLabel highScoreLabel;
     private final Menu menu;
     private Grid grid;
 
+    /**
+     * A constructor taking in a Game instance (the Game this GameWindow is portraying) and a Menu instance (the Menu where the GameWindow was opened).
+     * @param game the Game this GameWindow is portraying
+     * @param menu the Menu where the GameWindow was opened
+     */
     public GameWindow(Game game, Menu menu){
 
         this.game = game;
         this.menu = menu;
 
         load();
-
-        frame.setVisible(true);
+        open();
     }
 
+    /**
+     * A getter for the Menu where the GameWindow was opened.
+     * @return Menu
+     */
     public Window getMenu(){
         return menu;
     }
+
+    /**
+     * A getter for the Grid.
+     * @return Grid
+     */
     public JPanel getGrid(){
         return grid;
     }
@@ -51,7 +63,7 @@ public class GameWindow extends Window{
         frame = new JFrame();
         frame.setFocusable(true);
         frame.setResizable(false);
-        frame.setSize(950,600);
+        frame.setSize(510,550);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setUndecorated(true);
         frame.setLayout(null);
@@ -68,52 +80,42 @@ public class GameWindow extends Window{
         panel.setLayout(null);
         panel.setBackground(Configuration.SECONDARY_UI_COLOR);
         frame.add(panel);
-    }
-
-    private void loadGrid(){
-        grid = new Grid();
-        grid.setBounds(50,50, Configuration.getGridWidth(),Configuration.getGridWidth());
-        grid.setBorder(null);
-        grid.setLayout(null);
-        grid.setVisible(true);
-        panel.add(grid);
-    }
-
-    /**
-     * Loads a side panel where the score and highscore is shown. There is also a "STOP" button. Clicking on it stops the game and returns the user to the menu.
-     * @param menu The Menu opened upon clicking on the stop button
-     */
-    public void loadSidePanel(Menu menu){
-        sidePanel = new JPanel();
-        sidePanel.setBounds(600,50,300,500);
-        sidePanel.setBorder(BorderFactory.createLineBorder(Configuration.BORDER_COLOR,2));
-        sidePanel.setLayout(null);
-        sidePanel.setBackground(Configuration.PRIMARY_UI_COLOR);
-        panel.add(sidePanel);
-
         WindowButton stopButton = new WindowButton(this,menu,"STOP"){
             @Override
             public void actionPerformed(ActionEvent e){
                 game.stopGame();
                 game = null;
                 closeAndOpen();
-                playSound();
             }
         };
-        stopButton.setBounds(20,420,sidePanel.getWidth() - 40,60);
-        sidePanel.add(stopButton);
+        stopButton.setBounds(355,5,150,35);
+        stopButton.setFont(new Font("Arial", Font.BOLD, 30));
+        panel.add(stopButton);
 
-        scoreLabel = createScoreLabel(20);
-        highScoreLabel = createScoreLabel(60);
+        scoreLabel = createScoreLabel(5);
+        highScoreLabel = createScoreLabel(22);
         updateScoreLabel();
         updateHighScoreLabel();
     }
+
+    /**
+     * Loads the Grid where the squares are displayed.
+     */
+    private void loadGrid(){
+        grid = new Grid();
+        grid.setBounds(5,45, Configuration.getGridWidth(),Configuration.getGridWidth());
+        grid.setBorder(null);
+        grid.setLayout(null);
+        grid.setVisible(true);
+        panel.add(grid);
+
+    }
+
     @Override
     void load() {
         loadFrame();
         loadPanel();
         loadGrid();
-        loadSidePanel(menu);
     }
 
     /**
@@ -123,10 +125,10 @@ public class GameWindow extends Window{
      */
     public JLabel createScoreLabel(int yCoordinate){
         JLabel label = new JLabel();
-        label.setBounds(20,yCoordinate,sidePanel.getWidth() - 40,60);
-        label.setFont(new Font("Arial", Font.BOLD, 20));
-        label.setForeground(Configuration.SECONDARY_UI_COLOR);
-        sidePanel.add(label);
+        label.setBounds(5,yCoordinate,200,17);
+        label.setFont(new Font("Arial", Font.BOLD, 17));
+        label.setForeground(Configuration.PRIMARY_UI_COLOR);
+        panel.add(label);
         return label;
     }
 
@@ -166,7 +168,7 @@ public class GameWindow extends Window{
     /**
      * A grid on the GameWindow where the Squares are drawn.
      */
-    public class Grid extends JPanel {
+    public class Grid extends JPanel implements DrawLines{
         private final HashSet<Square> walls = game.getWalls();
         private final Snake snake = game.getSnake();
         private final BufferedImage up, down, left, right;
@@ -174,10 +176,10 @@ public class GameWindow extends Window{
         public Grid(){
             String colorName = Configuration.getUser().getChosenItem().getName();
 
-            up = DecalLoader.loadDecal("Decals\\" + colorName + "_snake_up.png");
-            down = DecalLoader.loadDecal("Decals\\" + colorName + "_snake_down.png");
-            left = DecalLoader.loadDecal("Decals\\" + colorName + "_snake_left.png");
-            right = DecalLoader.loadDecal("Decals\\" + colorName + "_snake_right.png");
+            up = DecalLoader.loadDecal("res\\Decals\\" + colorName + "_snake_up.png");
+            down = DecalLoader.loadDecal("res\\Decals\\" + colorName + "_snake_down.png");
+            left = DecalLoader.loadDecal("res\\Decals\\" + colorName + "_snake_left.png");
+            right = DecalLoader.loadDecal("res\\Decals\\" + colorName + "_snake_right.png");
         }
 
         /**
@@ -190,11 +192,10 @@ public class GameWindow extends Window{
             g.setColor(Configuration.PRIMARY_UI_COLOR);
             g.fillRect(0,0,500,500);
 
-            drawLines(g);
+            drawLines(g, Configuration.BORDER_COLOR);
             drawSnakeSquares(g);
             drawWalls(g);
             drawHead(g);
-
             drawApple(g);
 
         }
@@ -203,7 +204,7 @@ public class GameWindow extends Window{
          * Draws the Snake's body except for its head. That is handled by the drawHead() method.
          * @param g An instance of Graphics used to paint on a Grid
          */
-        public void drawSnakeSquares(Graphics g){
+        private void drawSnakeSquares(Graphics g){
             for (int i = 1; i < snake.getStructure().size(); i++) {
                 Square square = snake.getStructure().get(i);
                 square.drawSnake(g);
@@ -214,7 +215,7 @@ public class GameWindow extends Window{
          * Draws an apple if there is one.
          * @param g An instance of Graphics used to paint on a Grid
          */
-        public void drawApple(Graphics g){
+        private void drawApple(Graphics g){
             Square apple = game.getApple();
             if(apple != null){
                 apple.drawApple(g);
@@ -225,7 +226,7 @@ public class GameWindow extends Window{
          * Draws the walls of a Level.
          * @param g An instance of Graphics used to paint on a Grid
          */
-        public void drawWalls(Graphics g){
+        private void drawWalls(Graphics g){
             for (Square square : walls) {
                 square.drawEmpty(g);
             }
@@ -235,7 +236,7 @@ public class GameWindow extends Window{
          * Draws the Snake's head depending on its Direction.
          * @param g An instance of Graphics used to paint on a Grid
          */
-        public void drawHead(Graphics g){
+        private void drawHead(Graphics g){
             if(snake.getStructure().size() > 0){
                 Square head = snake.getStructure().getFirst();
                 Direction direction = snake.getDirection();
@@ -247,25 +248,6 @@ public class GameWindow extends Window{
                     case RIGHT -> image = right;
                 }
                 head.drawHead(g, image);
-            }
-        }
-
-        /**
-         * Draws lines on the Grid to paint squares.
-         * @param g An instance of Graphics used to paint on a Grid
-         */
-        public void drawLines(Graphics g){
-
-            g.setColor(Configuration.BORDER_COLOR);
-
-            g.drawLine(0,499,499,499);
-            g.drawLine(499,0,499,499);
-
-            for(int xCoordinate = 0; xCoordinate < Configuration.getRowsAndColumns(); xCoordinate++){
-                for(int yCoordinate = 0; yCoordinate < Configuration.getRowsAndColumns(); yCoordinate++){
-                    g.drawLine(xCoordinate*Configuration.getSquareSize(),0,xCoordinate*Configuration.getSquareSize(),500);
-                    g.drawLine(0,yCoordinate*Configuration.getSquareSize(),500,yCoordinate*Configuration.getSquareSize());
-                }
             }
         }
 

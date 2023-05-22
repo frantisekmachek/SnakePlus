@@ -30,6 +30,10 @@ public abstract class ScrollableMenu extends Menu{
         frame.add(panel);
     }
 
+    /**
+     * Loads the background which scales with the frame. The frame is scrollable, so the image takes up the whole background.
+     * @param g An instance of Graphics
+     */
     public void loadBackground(Graphics g){
         Graphics2D g2d = (Graphics2D)g;
 
@@ -43,6 +47,9 @@ public abstract class ScrollableMenu extends Menu{
         }
     }
 
+    /**
+     * Loads the ScrollPane for the panel.
+     */
     public void loadScrollPane(){
         JScrollPane scrollPane = new JScrollPane(panel);
         scrollPane.setBorder(BorderFactory.createLineBorder(Configuration.BORDER_COLOR,2));

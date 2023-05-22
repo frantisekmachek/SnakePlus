@@ -31,7 +31,6 @@ public class WindowButton extends Button {
      */
     @Override
     public void actionPerformed(ActionEvent e){
-        playSound();
         closeAndOpen();
     }
 }

@@ -1,6 +1,5 @@
 package UserInterface.Buttons;
 
-import Data.Configuration;
 import GameLogic.Game;
 import UserInterface.Windows.Menu;
 import UserInterface.Windows.Window;
@@ -34,6 +33,9 @@ public class PlayButton extends WindowButton{
         this.levelNumber = levelNumber;
     }
 
+    /**
+     * Closes the currently opened Window and opens a new game.
+     */
     @Override
     public void closeAndOpen(){
         currentWindow.close();
